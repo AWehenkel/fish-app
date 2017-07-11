@@ -25,7 +25,7 @@ SECRET_KEY = '+@1n!^!60sg8su@y(8(v-+o(n)!^ft2prj0fw1$si@)@v#59i+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'awehenkel.pythonanywhere.com', 'antoinewehenkel.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'awehenkel.pythonanywhere.com', 'antoinewehenkel.pythonanywhere.com']
 
 
 # Application definition
@@ -122,3 +122,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+LOGIN_REDIRECT_URL = '/'
