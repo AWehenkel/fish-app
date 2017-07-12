@@ -1,0 +1,20 @@
+{% extends 'fishapp/base.html' %}
+
+{% block content %}
+  <table class="data-table">
+    <tr>
+      <th>RFID</th>
+      <th>Aquarium</th>
+      <th>Creation Date</th>
+      <th>Last Tank</th>
+    </tr>
+    {% for fish in fishes %}
+      <tr>
+        <th>{{fish.rfid}}</th>
+        <th>{{fish.aquarium}}</th>
+        <th>{{fish.creation_date}}</th>
+        <th>to_add</th>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

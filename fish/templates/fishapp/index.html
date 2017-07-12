@@ -1,0 +1,89 @@
+{% extends 'fishapp/base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+<div class="content container">
+    <div class="row">
+      <div class="col-md-4 centered-text" onclick="document.getElementById('fish').style.display='block';document.getElementById('aquarium').style.display='none';">
+        <div class = "green-opaque button-block">
+          <div class="col-md-12 centered-text">
+            <h1>Fish Monitoring</h1>
+          </div>
+          <span width="100%" class="glyphicon glyphicon-tags"></span>
+          <br />
+        </div>
+      </div>
+        <div class="col-md-4 centered-text" onclick="document.getElementById('fish').style.display='none';document.getElementById('aquarium').style.display='block';">
+          <div class = "red-opaque button-block">
+            <div class="col-md-12 centered-text">
+              <h1>Aquarium Monitoring</h1>
+            </div>
+            <span width="100%" class="glyphicon glyphicon-folder-close"></span>
+            <br />
+          </div>
+        </div>
+        <div class="col-md-4 centered-text">
+          <a href="{% url 'data_monitor' %}">
+            <div class = "blue-opaque button-block">
+              <div class="col-md-12 centered-text">
+                <h1>Data Monitoring</h1>
+              </div>
+              <span width="100%" class="glyphicon glyphicon-hdd"></span>
+              <br />
+            </div>
+          </a>
+        </div>
+      </div>
+      <br />
+      <div id="fish" class="row" style="display:none;">
+        <div class="col-md-6 centered-text">
+          <a href="{% url 'add_fish' %}">
+            <div class = "green-opaque button-block">
+              <div class="col-md-12 centered-text">
+                <h1>Add Fish</h1>
+              </div>
+              <span width="100%" class="glyphicon glyphicon-plus"></span>
+              <br />
+            </div>
+          </a>
+        </div>
+        <div class="col-md-6 centered-text">
+          <a href="{% url 'delete_fish' %}">
+            <div class = "red-opaque button-block">
+              <div class="col-md-12 centered-text">
+                <h1>Remove Fish</h1>
+              </div>
+              <span width="100%" class="glyphicon glyphicon-minus"></span>
+              <br />
+            </div>
+          </a>
+        </div>
+      </div>
+      <div id="aquarium" class="row" style="display:none;">
+        <div class="col-md-6 centered-text">
+          <a href="{% url 'add_aquarium' %}">
+            <div class = "green-opaque button-block">
+              <div class="col-md-12 centered-text">
+                <h1>Add Aquarium</h1>
+              </div>
+              <span width="100%" class="glyphicon glyphicon-plus"></span>
+              <br />
+            </div>
+          </a>
+        </div>
+        <div class="col-md-6 centered-text">
+          <a href="{% url 'delete_aquarium' %}">
+            <div class = "red-opaque button-block">
+              <div class="col-md-12 centered-text">
+                <h1>Remove Aquarium</h1>
+              </div>
+              <span width="100%" class="glyphicon glyphicon-minus"></span>
+              <br />
+            </div>
+          </a>
+        </div>
+      </div>
+
+</div>
+{% endblock %}
