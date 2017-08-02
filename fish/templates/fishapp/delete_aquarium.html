@@ -1,0 +1,63 @@
+{% extends 'fishapp/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class = "col-md-6 col-md-offset-3">
+    <h2>Active aquarium</h2>
+    <table class="data-table">
+      <tr>
+        <th>Name</th>
+        <th>Tank Number</th>
+        <th>USB Ports</th>
+        <th>Temperatures</th>
+        <th>Creation Date</th>
+        <th>Last Detection</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+      {% for aquarium in aquarium_on %}
+        <tr>
+          <th>{{aquarium.name}}</th>
+          <th>{{aquarium.tank_nbr}}</th>
+          <th>{{aquarium.usbs}}</th>
+          <th>{{aquarium.temperatures}}</th>
+          <th>{{aquarium.creation_date}}</th>
+          <th>to_add</th>
+          <th><span width="100%" class="glyphicon glyphicon-pencil"></span></th>
+          <th><a href="{% url 'delete_aquarium' %}{{aquarium.pk}}/"><span width="100%" class="glyphicon glyphicon-trash"></span></a></th>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class = "col-md-6 col-md-offset-3">
+    <h2>Inactive aquarium</h2>
+    <table class="data-table">
+      <tr>
+        <th>Name</th>
+        <th>Tank Number</th>
+        <th>USB Ports</th>
+        <th>Temperatures</th>
+        <th>Creation Date</th>
+        <th>Last Detection</th>
+        <th>Edit</th>
+        <th>Add</th>
+      </tr>
+      {% for aquarium in aquarium_off %}
+        <tr>
+          <th>{{aquarium.name}}</th>
+          <th>{{aquarium.tank_nbr}}</th>
+          <th>{{aquarium.usbs}}</th>
+          <th>{{aquarium.temperatures}}</th>
+          <th>{{aquarium.creation_date}}</th>
+          <th>to_add</th>
+          <th><span width="100%" class="glyphicon glyphicon-pencil"></span></th>
+          <th><a href="{% url 'delete_aquarium' %}{{aquarium.pk}}/"><span width="100%" class="glyphicon glyphicon-plus"></span></a></th>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

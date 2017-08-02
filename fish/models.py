@@ -24,6 +24,7 @@ class Aquarium(models.Model):
     usbs = models.TextField()
     temperatures = models.TextField()
     creation_date = models.DateTimeField(default=timezone.now)
+    active = models.BooleanField(default=True)
 
     def register(self):
         self.save()
@@ -45,8 +46,11 @@ class Fish(models.Model):
 
 class FishDetection(models.Model):
     fish_id = models.ForeignKey('fish.Fish', related_name='detections')
+    aquarium_id = models.ForeignKey('fish.Aquarium', related_name='detections')
     antenna_number = models.IntegerField()
     creation_date = models.DateTimeField(default=timezone.now)
+    duration =  models.FloatField()
+    nb_detection = models.IntegerField()
 
     def register(self):
         self.save()
