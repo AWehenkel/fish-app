@@ -3,10 +3,10 @@ import psycopg2
 
 hostname = 'localhost'
 username = 'antoine'
-password = ''
+password = 'fish'
 database = 'fishapp'
 
-arduino = serial.Serial('/dev/tty.usbmodem1411', 9600, timeout=.1)
+arduino = serial.Serial('/dev/ttyACM0', 9600, timeout=.1)
 antenna_number = 1
 time.sleep(2)
 new_tag_constant = "<<new_tag>>"
