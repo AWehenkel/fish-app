@@ -9,3 +9,38 @@
       </form>
     </div>
 {% endblock %}
+
+{% block javascript %}
+  <script>
+    $("#id_aquarium").change(function () {
+      console.log( $(this).val() );
+      if(!($(this).val() === '')){
+        $.ajax({
+            url: '/ajax/check_aquarium_fish/',
+            data: {'aquarium_id': $(this).val(),'fish_id':$("#id_rfid").val()},
+            dataType: 'json',
+            success: function (data) {
+              console.log(data.aquarium_ok);
+              if(!data.aquarium_ok){
+                alert("This id is already present in this aquarium.\nYou have to changer either the aquarium or the RFID chip.");
+                $("#id_aquarium").val('');
+              }
+            }
+        });
+      }
+    });
+
+    $(function() {
+  setInterval(function() {
+    $.ajax({
+        url: '/ajax/update_last_fish/',
+        data: {},
+        dataType: 'json',
+        success: function (data) {
+          $("#id_rfid").val(data.rfid);
+        }
+    });
+  },1000);
+});
+  </script>
+{% endblock %}

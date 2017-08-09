@@ -1,5 +1,5 @@
 .page-header {
-    background-color: #ff9400;
+    background-color: #83b0f5;
     margin-top: 0;
     padding: 20px 20px 20px 40px;
 }
@@ -103,4 +103,13 @@ body {
 
 .data-table tr:hover{
   opacity: 0.5;
+}
+
+.log-box{
+  overflow: scroll;
+  height: 100px;
+  border: 2px solid red;
+  background-color: rgb(236, 132, 99);
+  border-radius: 5px;
+  color: #1f0c05;
 }
