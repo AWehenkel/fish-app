@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load tags %}
 <html>
     <head>
         <title>Fish Tracking System</title>
@@ -9,7 +10,41 @@
     </head>
     <body>
       <div class="page-header">
-          <h1><a href="/">Fish Tracking System</a></h1>
+          <div class="row">
+            <div class="col-md-6">
+              <h1><a href="/">Fish Tracking System</a></h1>
+            </div>
+            {% if user.is_authenticated %}
+            {% usbProblem as usb_problem %}
+            {{ usb_problem.update }}
+            {% if usb_problem.nbProblem > 0 %}
+              <div class="col-md-offset-3 col-md-3 log-box">
+                There
+                {% if usb_problem.nbProblem > 1 %}
+                  are {{ usb_problem.nbProblem }} problems
+                {% else %}
+                  is 1 problem:
+                {% endif %}
+              </br>
+                {% if usb_problem.usb_problem %}
+                  USB connexion:</br>
+                  {% for usb_p in usb_problem.usb_problem %}
+                    Antenna {{ usb_p.position }} of the aquarium "{{ usb_p.aquarium_id }}".</br>
+                  {% endfor %}
+                {% endif %}
+                {% if usb_problem.antenna_problem %}
+                  Antenna problem:</br>
+                  {% for antenna in usb_problem.antenna_problem %}
+                    Antenna {{ antenna.position }} of the aquarium "{{ antenna.aquarium_id }}".</br>
+                  {% endfor %}
+                {% endif %}
+
+
+              </div>
+              {% endif %}
+            {% endif %}
+          </div>
+
       </div>
       <div class="content container">
           <div class="row">
@@ -19,5 +54,8 @@
               </div>
           </div>
       </div>
+      <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+      <script src="{% static 'js/app.js' %}"></script>
+      {% block javascript %}{% endblock %}
     </body>
 </html>

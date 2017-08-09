@@ -1,0 +1,29 @@
+{% extends 'fishapp/base.html' %}
+{% block content %}
+<div class="row">
+  <div class = "col-md-6 col-md-offset-3">
+    <h2>Inactive fishes</h2>
+    <table class="data-table">
+      <tr>
+        <th>RFID</th>
+        <th>Aquarium</th>
+        <th>Antenna</th>
+        <th>Creation Date</th>
+        <th>Duration(in ms)</th>
+        <th>Number of detections</th>
+      </tr>
+      {% for detection in last_detections %}
+        <tr>
+            <th>{{detection.fish_id}}</th>
+            <th>{{detection.aquarium_id}}</th>
+            <th>{{detection.antenna_number}}</th>
+            <th>{{detection.creation_date}}</th>
+            <th>{{detection.duration}}</th>
+            <th>{{detection.nb_detection}}</th>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+{% endblock %}

@@ -6,8 +6,10 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models.query import QuerySet
+from django.http import JsonResponse
 
-from .models import Fish, Aquarium
+
+from .models import Fish, Aquarium, FishDetection, NewFish
 from .forms import FishForm, AquariumForm
 
 @login_required
@@ -17,7 +19,8 @@ def home_page(request):
 
 @login_required
 def data_monitor(request):
-    return render(request, 'fishapp/data_monitor.html')
+    last_detections = FishDetection.objects.order_by('-id', )[:10]
+    return render(request, 'fishapp/data_monitor.html', {'last_detections': last_detections})
 
 @login_required
 def add_fish(request):
@@ -66,3 +69,20 @@ def delete_aquarium(request, pk):
         aquarium.active = not(aquarium.active)
         aquarium.save()
     return render(request, 'fishapp/delete_aquarium.html', {'aquarium_on': aquarium_on, 'aquarium_off': aquarium_off})
+
+@login_required
+def update_last_fish(request):
+    rfid = NewFish.objects.order_by('-id', )[:1]
+    data = {
+        'rfid': rfid[0].rfid
+    }
+    return JsonResponse(data)
+
+@login_required
+def check_aquarium_fish(request):
+    aquarium_id = request.GET.get('aquarium_id', None)
+    fish_id = request.GET.get('fish_id', None)
+    data = {
+        'aquarium_ok': not Fish.objects.filter(aquarium_id=aquarium_id, rfid=fish_id).exists()
+    }
+    return JsonResponse(data)
