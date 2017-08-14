@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog',
     'fish',
 ]
 
@@ -87,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'fishapp',
         'USER': 'antoine',
-        'PASSWORD': '',
+        'PASSWORD': 'fish',
         'HOST': 'localhost',
         'PORT': '',
     }
