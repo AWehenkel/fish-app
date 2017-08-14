@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^delete_aquarium/((?P<pk>\d+)/)?$$', views.delete_aquarium, name='delete_aquarium'),
     url(r'^ajax/update_last_fish/$', views.update_last_fish, name='update_last_fish'),
     url(r'^ajax/check_aquarium_fish/$', views.check_aquarium_fish, name='check_aquarium_fish'),
+    url(r'^download_data/((?P<file_type>(fish|raw))/)?$', views.download_data, name='download_data'),
 ]

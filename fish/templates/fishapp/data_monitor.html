@@ -25,6 +25,12 @@
         </tr>
       {% endfor %}
     </table>
+    <div class="row">
+      <div style="height:30px;"class = "col-md-1 col-md-offset-5">
+        <a class="download-button" href="{% url 'download_data' %}raw/">Download</a>
+      </div>
+    </div>
+
   </div>
   <div style="margin-top:50px;"class="col-md-4">
     <div class="filter_form">
@@ -90,6 +96,11 @@
         </tr>
       {% endfor %}
     </table>
+    <div class="row">
+      <div style="height:30px;"class = "col-md-1 col-md-offset-5">
+        <a class="download-button" href="{% url 'download_data' %}fish/">Download</a>
+      </div>
+    </div>
   </div>
   <div style="margin-top:50px;"class="col-md-4">
     <div class="filter_form">

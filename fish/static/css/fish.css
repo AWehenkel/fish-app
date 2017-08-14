@@ -131,3 +131,13 @@ body {
   border:solid 1px white;
   border-radius:5px;
 }
+
+.download-button{
+  padding: 5px;
+  background-color: white;
+  border-radius: 3px;
+  border: 2px solid #79a3e1;
+  color: #79a3e1;
+  text-align: center;
+  margin: 10px;
+}

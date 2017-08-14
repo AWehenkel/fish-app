@@ -1,6 +1,9 @@
 import os
 import pandas as pd
 from django_pandas.io import read_frame
+from mimetypes import MimeTypes
+from django.http import Http404
+
 
 from django.shortcuts import render
 from django.utils import timezone
@@ -9,7 +12,8 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models.query import QuerySet
 from django.http import JsonResponse, HttpResponse
-
+from django.utils.encoding import smart_str
+from wsgiref.util import FileWrapper
 
 from .models import Fish, Aquarium, FishDetection, NewFish, FishPosition
 from .forms import FishForm, AquariumForm
@@ -57,7 +61,8 @@ def data_monitor(request):
         last_positions = FishPosition.objects.order_by('-id', )[:5]
 
     aquariums = Aquarium.objects.all()
-    read_frame(last_detections).to_csv("data.csv")
+    read_frame(last_detections).to_csv("data_raw.csv")
+    read_frame(last_positions).to_csv("data_fish.csv")
     return render(request, 'fishapp/data_monitor.html', {'last_detections': last_detections, 'aquariums': aquariums,
     'form_values': form_values, 'last_positions': last_positions, 'anchor': anchor})
 
@@ -125,3 +130,15 @@ def check_aquarium_fish(request):
         'aquarium_ok': not Fish.objects.filter(active=True, aquarium_id=aquarium_id, rfid=fish_id).exists()
     }
     return JsonResponse(data)
+
+@login_required
+def download_data(request, file_type):
+    path = "data_%s.csv" % file_type
+    wrapper = FileWrapper(open(path, "r"))
+    mime = MimeTypes()
+    content_type = mime.guess_type(path)[0]
+    response = HttpResponse(wrapper, content_type = content_type)
+    response['Content-Length'] = os.path.getsize( path ) # not FileField instance
+    response['Content-Disposition'] = 'attachment; filename=%s/' % \
+                                       smart_str( os.path.basename( path ) ) # same here
+    return response
