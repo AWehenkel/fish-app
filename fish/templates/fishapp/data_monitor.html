@@ -1,8 +1,10 @@
 {% extends 'fishapp/base.html' %}
+{% load fishapp_filters %}
+
 {% block content %}
-<div class="row">
-  <div class = "col-md-6 col-md-offset-3">
-    <h2>Inactive fishes</h2>
+<div id="raw" class="row background-color-blue">
+  <div class = "col-md-7 col-md-offset-1">
+    <h2 style="color:white;">Raw Data</h2>
     <table class="data-table">
       <tr>
         <th>RFID</th>
@@ -24,6 +26,158 @@
       {% endfor %}
     </table>
   </div>
+  <div style="margin-top:50px;"class="col-md-4">
+    <div class="filter_form">
+      <h3 style="color:white;">Filtering</h3>
+      <form action="{% url 'data_monitor' %}#raw" method="POST">
+        {% csrf_token %}
+        <ul>
+          <li>
+            Date (yyyy-mm-dd) :</br>
+            From <input type="date" name="time_from_raw" /></br>
+            To&nbsp;&nbsp;&nbsp;&nbsp; <input type="date" name="time_to_raw" />
+          </li>
+          <li>
+            Aquarium :</br>
+            {% for aquarium in aquariums %}
+              <input type="checkbox" name="aquarium_raw" id="aquarium_raw{{ aquarium.id }}" value="{{ aquarium.id }}"> {{ aquarium }}</br>
+            {% endfor %}
+              <input type="checkbox" name="" value="" onclick="toggle(this, 'raw');"/> Check All
+          </li>
+          <li>
+            Maximum number of results(let empty for all result) :</br>
+            <input type="number" min=1 name="nb_results_raw" />
+          </li>
+          <li>
+            Order by:</br>
+            <select name="order_by_raw">
+              <option value="creation_date">Time</option>
+              <option value="aquarium_id">Aquarium</option>
+              <option value="fish_id">Fish ID</option>
+            </select>
+          </li>
+        </ul>
+        <input type="submit">
+      </form>
+    </div>
+
+  </div>
+</div>
+</br>
+</br>
+</br>
+
+<div id="fish" class="row background-color-blue">
+  <div class = "col-md-7 col-md-offset-1">
+    <h2 style="color:white;">Fish Behavior</h2>
+    <table class="data-table">
+      <tr>
+        <th>RFID</th>
+        <th>Aquarium</th>
+        <th>Position</th>
+        <th>Begin</th>
+        <th>End</th>
+        <th>Time</th>
+      </tr>
+      {% for position in last_positions %}
+        <tr>
+            <th>{{position.fish}}</th>
+            <th>{{position.fish.aquarium_id}}</th>
+            <th>{{position.position}}</th>
+            <th>{{position.begin_date}}</th>
+            <th>{{position.end_date}}</th>
+            <th>to add</th>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div style="margin-top:50px;"class="col-md-4">
+    <div class="filter_form">
+      <h3 style="color:white;">Filtering</h3>
+      <form action="{% url 'data_monitor' %}#fish" method="POST">
+        {% csrf_token %}
+        <ul>
+          <li>
+            Date (yyyy-mm-dd) :</br>
+            From <input type="date" name="time_from_position" /></br>
+            To&nbsp;&nbsp;&nbsp;&nbsp; <input type="date" name="time_to_position" />
+          </li>
+          <li>
+            Aquarium :</br>
+            {% for aquarium in aquariums %}
+              <input type="checkbox" name="aquarium_position" id="aquarium_position{{ aquarium.id }}" value="{{ aquarium.id }}"> {{ aquarium }}</br>
+            {% endfor %}
+              <input type="checkbox" name="" value="" onclick="toggle(this, 'position');"/> Check All
+          </li>
+          <li>
+            Maximum number of results(let empty for all result) :</br>
+            <input type="number" min=1 name="nb_results_position" />
+          </li>
+          <li>
+            Order by:</br>
+            <select name="order_by_position">
+              <option value="avg_t_fish">Average fish temperature</option>
+              <option value="begin_date">Time</option>
+              <option value="fish__aquarium_id">Aquarium</option>
+              <option value="fish_id">Fish ID</option>
+            </select>
+          </li>
+        </ul>
+        <input type="submit">
+      </form>
+    </div>
+
+  </div>
 </div>
 
+{% endblock %}
+
+{% block javascript %}
+
+<script language="JavaScript">
+function toggle(source, position) {
+  checkboxes = document.getElementsByName('aquarium_' + position);
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+  }
+}
+
+{% if form_values %}
+  {% if form_values.order_by_raw %}
+    var order_by = "{{ form_values.order_by_raw }}";
+    $('[name=order_by_raw]').val(order_by);
+
+    {% if form_values.aquarium_raw %}
+      var aquarium = {{ form_values|getJSArray:'aquarium_raw'}};
+      aquarium.forEach(function(value){
+        document.getElementById("aquarium_raw"+value.toString()).checked = true;
+      });
+    {% endif %}
+
+    $('[name=nb_results_raw]').val({{ form_values.nb_results_raw }})
+    $('[name=time_from_raw]').val('{{ form_values.time_from_raw }}')
+    $('[name=time_to_raw]').val('{{ form_values.time_to_raw }}')
+  {% elif form_values.order_by_position %}
+    var order_by = "{{ form_values.order_by_position }}";
+    $('[name=order_by_position]').val(order_by);
+
+    {% if form_values.aquarium_position %}
+      var aquarium = {{ form_values|getJSArray:'aquarium_position'}};
+      aquarium.forEach(function(value){
+        document.getElementById("aquarium_position"+value.toString()).checked = true;
+      });
+    {% endif %}
+
+    $('[name=nb_results_position]').val({{ form_values.nb_results_position }})
+    $('[name=time_from_position]').val('{{ form_values.time_from_position }}')
+    $('[name=time_to_position]').val('{{ form_values.time_to_position }}')
+  {% endif %}
+{% endif %}
+{% if anchor %}
+  $(document).ready(function(){
+    var tag = $('#{{ anchor }}');
+    $('html,body').animate({scrollTop: tag.offset().top}, 'slow');
+  });
+{% endif %}
+</script>
 {% endblock %}

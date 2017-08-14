@@ -113,3 +113,21 @@ body {
   border-radius: 5px;
   color: #1f0c05;
 }
+
+.filter_form{
+  margin: 10px;
+  padding: 10px;
+  background-color: rgba(131, 176, 245, 0.88);
+  /* background-color: white; */
+  border: 1px solid white;
+  border-radius:5px;
+}
+.filter_form input{
+  line-height: inherit;
+}
+
+.background-color-blue{
+  background-color: rgba(145, 185, 246, 0.35);
+  border:solid 1px white;
+  border-radius:5px;
+}

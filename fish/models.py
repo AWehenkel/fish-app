@@ -22,9 +22,12 @@ class Fish(models.Model):
     active = models.BooleanField(default=True)
     infected = models.BooleanField(default=False)
     note = models.TextField(default="")
+    init_position = models.IntegerField(default=0)
 
     def register(self):
         self.save()
+        test = FishPosition.objects.create(fish=self, position=self.init_position, begin_date=self.creation_date)
+        print(test)
 
     def __str__(self):
         return self.rfid
@@ -41,7 +44,7 @@ class FishDetection(models.Model):
         self.save()
 
     def __str__(self):
-        return self.fish_id
+        return "%s, %d, %d, %s, %f, %d" % (str(self.fish_id), self.aquarium_id.id, self.antenna_number, self.creation_date, self.duration, self.nb_detection)
 
 class NewFish(models.Model):
     rfid = models.CharField(max_length=10)
@@ -63,3 +66,15 @@ class Antenna(models.Model):
 
     def __str__(self):
         return "antenna_%d" % self.id
+
+class FishPosition(models.Model):
+    fish = models.ForeignKey('fish.Fish', related_name='position')
+    position = models.IntegerField()
+    begin_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+    def register(self):
+        self.save()
+
+    def __str__(self):
+        return "%s_%d_%s" % (self.fish, self.position, self.begin_date)

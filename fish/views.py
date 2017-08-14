@@ -1,4 +1,6 @@
 import os
+import pandas as pd
+from django_pandas.io import read_frame
 
 from django.shortcuts import render
 from django.utils import timezone
@@ -6,11 +8,13 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models.query import QuerySet
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 
-from .models import Fish, Aquarium, FishDetection, NewFish
+from .models import Fish, Aquarium, FishDetection, NewFish, FishPosition
 from .forms import FishForm, AquariumForm
+
+from datetime import datetime
 
 @login_required
 def home_page(request):
@@ -19,15 +23,50 @@ def home_page(request):
 
 @login_required
 def data_monitor(request):
-    last_detections = FishDetection.objects.order_by('-id', )[:10]
-    return render(request, 'fishapp/data_monitor.html', {'last_detections': last_detections})
+    anchor = ""
+    if request.method == "POST":
+        data = request.POST
+        last_detections = FishDetection.objects.all()
+        last_positions = FishPosition.objects.all()
+        form_values = data
+        if "aquarium_raw" in data.keys():
+            last_detections = last_detections.filter(aquarium_id__in=data["aquarium_raw"])
+        if "time_to_raw" in data.keys() and data["time_to_raw"]:
+            last_detections = last_detections.filter(creation_date__lte=datetime.strptime(data["time_to_raw"], '%Y-%m-%d')).all()
+        if "time_from_raw" in data.keys() and data["time_from_raw"]:
+            last_detections = last_detections.filter(creation_date__gte=datetime.strptime(data["time_from_raw"], '%Y-%m-%d')).all()
+        if "order_by_raw" in data.keys() and data["order_by_raw"]:
+            anchor = "raw"
+            last_detections = last_detections.order_by(data["order_by_raw"])
+        if "nb_results_raw" in data.keys() and data["nb_results_raw"]:
+            last_detections = last_detections[:int(data["nb_results_raw"])]
+        if "aquarium_position" in data.keys():
+            last_positions = last_positions.filter(fish__aquarium_id__in=data["aquarium_position"])
+        if "time_to_position" in data.keys() and data["time_to_position"]:
+            last_positions = last_positions.filter(end_date__lte=datetime.strptime(data["time_to_position"], '%Y-%m-%d')).all()
+        if "time_from_position" in data.keys() and data["time_from_position"]:
+            last_positions = last_positions.filter(end_date__gte=datetime.strptime(data["time_from_position"], '%Y-%m-%d')).all()
+        if "order_by_position" in data.keys() and data["order_by_position"]:
+            anchor="fish"
+            last_positions = last_positions.order_by(data["order_by_position"])
+        if "nb_results_position" in data.keys() and data["nb_results_position"]:
+            last_positions = last_positions[:int(data["nb_results_position"])]
+    else:
+        form_values = {}
+        last_detections = FishDetection.objects.order_by('-id', )[:5]
+        last_positions = FishPosition.objects.order_by('-id', )[:5]
+
+    aquariums = Aquarium.objects.all()
+    read_frame(last_detections).to_csv("data.csv")
+    return render(request, 'fishapp/data_monitor.html', {'last_detections': last_detections, 'aquariums': aquariums,
+    'form_values': form_values, 'last_positions': last_positions, 'anchor': anchor})
 
 @login_required
 def add_fish(request):
     if request.method == "POST":
         form = FishForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.instance.register()
             return redirect('home_page')
     form = FishForm()
     return render(request, 'fishapp/add_fish_aquarium.html', {'form': form, 'name': "Fish"})
@@ -83,6 +122,6 @@ def check_aquarium_fish(request):
     aquarium_id = request.GET.get('aquarium_id', None)
     fish_id = request.GET.get('fish_id', None)
     data = {
-        'aquarium_ok': not Fish.objects.filter(aquarium_id=aquarium_id, rfid=fish_id).exists()
+        'aquarium_ok': not Fish.objects.filter(active=True, aquarium_id=aquarium_id, rfid=fish_id).exists()
     }
     return JsonResponse(data)
