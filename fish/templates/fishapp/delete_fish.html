@@ -1,5 +1,5 @@
 {% extends 'fishapp/base.html' %}
-
+{% load fishapp_filters %}
 {% block content %}
 <div class="row">
   <div class = "col-md-6 col-md-offset-3">
@@ -9,8 +9,7 @@
         <th>RFID</th>
         <th>Aquarium</th>
         <th>Creation Date</th>
-        <th>Last Tank</th>
-        <th>Edit</th>
+        <th>Current Tank</th>
         <th>Delete</th>
       </tr>
       {% for fish in active_fishes %}
@@ -18,8 +17,7 @@
           <th>{{fish.rfid}}</th>
           <th>{{fish.aquarium}}</th>
           <th>{{fish.creation_date}}</th>
-          <th>to_add</th>
-          <th><span width="100%" class="glyphicon glyphicon-pencil"></span></th>
+          <th>{{fish|getLastPosition}}</th>
           <th><a href="{% url 'delete_fish' %}{{fish.pk}}/"><span width="100%" class="glyphicon glyphicon-trash"></span></a></th>
         </tr>
       {% endfor %}
@@ -35,8 +33,7 @@
         <th>RFID</th>
         <th>Aquarium</th>
         <th>Creation Date</th>
-        <th>Last Tank</th>
-        <th>Edit</th>
+        <th>Current Tank</th>
         <th>Add</th>
       </tr>
       {% for fish in dead_fishes %}
@@ -44,12 +41,19 @@
           <th>{{fish.rfid}}</th>
           <th>{{fish.aquarium}}</th>
           <th>{{fish.creation_date}}</th>
-          <th>to_add</th>
-          <th><span width="100%" class="glyphicon glyphicon-pencil"></span></th>
+          <th>{{fish|getLastPosition}}</th>
           <th><a href="{% url 'delete_fish' %}{{fish.pk}}/"><span width="100%" class="glyphicon glyphicon-plus"></span></a></th>
         </tr>
       {% endfor %}
     </table>
   </div>
 </div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+{% if problem %}
+alert("Problem: " + "{{ problem }}");
+{% endif %}
+</script>
 {% endblock %}

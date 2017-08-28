@@ -17,3 +17,7 @@ def getJSArray(querrydict, item_to_get):
     print(list_ret)
     to_ret = "".join(list_ret)
     return to_ret
+
+@register.filter
+def getLastPosition(fish):
+    return fish.position.all().latest('id').position

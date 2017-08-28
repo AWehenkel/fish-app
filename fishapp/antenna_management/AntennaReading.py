@@ -7,6 +7,8 @@ hostname = 'localhost'
 username = 'antoine'
 password = ''
 database = 'fishapp'
+
+# Constants used by the arduino to communicate informations.
 new_tag_constant = "<<new_tag>>"
 new_fish_constant = "<<new_fish>>"
 antenna_problem_constant = "<<antenna_problem>>"
@@ -40,10 +42,9 @@ for aquarium in cur.fetchall():
         cur.execute(request)
 myConnection.commit()
 myConnection.close()
-#arduino = serial.Serial('/dev/tty.usbmodem1411', 9600, timeout=.1)
-#antenna_number = 1
+
 time.sleep(2)
-# Simple routine to run a query on a database and print the results:
+# Simple routine to add a fish detection in the DB.
 def addDetection(conn, dict):
     cur = conn.cursor()
     print(dict)
@@ -59,7 +60,7 @@ def addDetection(conn, dict):
             cur.execute("UPDATE fish_fishposition SET end_date='%s' WHERE id=%d" % (time.strftime("%Y-%m-%d %H:%M:%S"), result[0]))
         conn.commit()
 
-# Simple routine to run a query on a database and print the results:
+# Simple routine to update the last id detected.
 def addFish(conn, rfid) :
     cur = conn.cursor()
     cur.execute("INSERT INTO fish_newfish (rfid) VALUES ('%s')"

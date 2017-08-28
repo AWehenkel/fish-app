@@ -84,11 +84,15 @@ def delete_fish(request, pk):
     query = Fish.objects.filter(active=False).all().query
     query.order_by = ['aquarium_id']
     dead_fishes = QuerySet(query=query, model=Fish)
+    problem = ""
     if pk is not None:
         fish = get_object_or_404(Fish, pk=pk)
         fish.active = not(fish.active)
-        fish.save()
-    return render(request, 'fishapp/delete_fish.html', {'active_fishes': active_fishes, 'dead_fishes': dead_fishes})
+        if not fish.active or not active_fishes.filter(rfid=fish.rfid, aquarium_id=fish.aquarium_id):
+            fish.save()
+        else:
+            problem = "Fish already present in this aquarium with this rfid."
+    return render(request, 'fishapp/delete_fish.html', {'active_fishes': active_fishes, 'dead_fishes': dead_fishes, 'problem': problem})
 
 @login_required
 def add_aquarium(request):
